@@ -800,3 +800,576 @@ This confirms:
 |ls -l|View ownership and permissions|
 
 chown manages owners, while chgrp manages group ownership of files and directories.
+
+## **System Administration**
+
+### **What are system services and daemons in Linux? How do you manage them using systemctl?**
+
+**System Services and Daemons in Linux**
+
+A daemon is a background process that runs continuously and performs specific tasks without direct user interaction. Daemons usually start when the system boots and keep running until the system shuts down.
+
+Examples:
+
+- sshd – Allows remote SSH connections.
+- cron – Runs scheduled tasks.
+- Apache HTTP Server – Serves web pages.
+
+A service is a managed daemon or application that provides functionality to the system or users. Modern Linux distributions commonly use systemd to manage services.
+
+**Managing Services with systemctl**
+
+systemctl is the command-line tool used to control and monitor services managed by systemd.
+
+**Check the Status of a Service**
+
+~~~bash
+bash
+
+systemctl status sshd
+~~~
+
+This displays whether the service is running, stopped, enabled, or disabled.
+
+Start a Service
+
+~~~bash
+bash
+
+sudo systemctl start sshd
+~~~
+
+This Starts the service immediately
+
+Stop a Service
+
+~~~bash
+bash
+
+sudo systemctl stop sshd
+~~~
+
+This Stops the service.
+
+Restart a Service
+
+~~~bash
+bash
+
+sudo systemctl restart sshd
+~~~
+
+This Stops and starts the service again.
+
+Reload a Service
+
+~~~bash
+bash
+
+sudo systemctl reload sshd
+~~~
+
+Reloads configuration files without fully restarting the service (if supported).
+
+Enable a Service at Boot
+
+~~~bash
+bash
+
+sudo systemctl enable sshd
+~~~
+
+Configures the service to start automatically when the system boots.
+
+Disable a Service at Boot
+
+~~~bash
+bash
+
+sudo systemctl disable sshd
+~~~
+
+Prevents the service from starting automatically.
+
+Check Whether a Service Is Enabled
+
+~~~bash
+bash
+
+systemctl is-enabled sshd
+~~~
+
+Check Whether a Service Is Running
+
+~~~bash
+bash
+
+systemctl is-active sshd
+~~~
+
+List All Running Services
+
+~~~bash
+bash
+
+systemctl list-units --type=service
+~~~
+
+List All Installed Services
+
+~~~bash
+bash
+
+systemctl list-unit-files --type=service
+~~~
+
+**Example Workflow**
+
+1. Check the status of the SSH service:
+
+~~~bash
+bash
+
+systemctl status sshd
+~~~
+
+Start it if it is not running:
+
+~~~bash
+bash
+
+sudo systemctl start sshd
+~~~
+
+Enable it to start automatically at boot:
+
+~~~bash
+bash
+
+sudo systemctl enable sshd
+~~~
+
+Verify that it is enabled:
+
+~~~bash
+bash
+
+systemctl is-enabled sshd
+~~~
+
+**Summary**
+
+|Command|Purpose|
+|-----|------|
+|systemctl status service|View service status|
+|systemctl start service|Start a service|
+|systemctl stop service|Stop a service|
+|systemctl restart service|Restart a service|
+|systemctl reload service|Reload configuration|
+|systemctl enable service|Start service at boot|
+|systemctl disable service|Disable auto-start|
+|systemctl is-active service|Check if running|
+|systemctl is-enabled service|Check if enabled|
+|systemctl list-units --type=service|List running services|
+
+In Linux, daemons are background processes that provide services, and systemctl is the primary tool for managing them on systems that use systemd.
+
+### **Explain how to schedule tasks in Linux using cron and at**
+
+**Scheduling Tasks in Linux with cron and at**
+
+Linux provides two main tools for scheduling tasks:
+
+- cron – For recurring tasks (daily, weekly, monthly, etc.)
+- at – For one-time tasks scheduled to run at a specific time
+
+1. **Using cron**: The cron daemon (cron) runs scheduled commands automatically at specified times.
+
+**View Current Cron Jobs**
+
+~~~bash
+bash
+
+crontab -l
+~~~
+
+**Edit Cron Jobs**
+
+~~~bash
+bash
+
+crontab -e
+~~~
+
+This opens the user’s cron table for editing.
+
+**Cron Syntax**
+
+~~~text
+text
+
+* * * * * command
+| | | | |
+| | | | └── Day of Week (0-7, Sunday= 0 or 7)
+| | | └──── Month (1-12)
+| | └────── Day of Month (1-31)
+| └──────── Hour (0-23)
+└────────── Minute (0-59)
+~~~
+
+**Examples**
+
+**Run a script every day at 2:30 AM**
+
+~~~bash
+bash
+
+30 2 * * * /home/john/backup.sh
+~~~
+
+**Run every hour**
+
+~~~bash
+bash
+
+0 * * * * /home/john/script.sh
+~~~
+
+**Run every Monday at 8:00 AM**
+
+~~~bash
+bash
+
+0 8 * * 1 /home/john/report.sh
+~~~
+
+**Run every 5 minutes**
+
+~~~bash
+bash
+
+*/5 * * * * /home/john/check.sh
+~~~
+
+**Remove All Cron Jobs**
+
+~~~bash
+bash
+
+crontab -r
+~~~
+
+2. **Using at**: The at command schedules a task to run once at a specified time.
+
+**Schedule a Job**
+
+~~~bash
+ bash
+
+at 5:00 PM
+~~~
+
+After pressing Enter, type the command:
+
+~~~bash
+bash
+
+echo "System maintenance" >> maintenance.log
+~~~
+
+Press:
+
+~~~text
+text
+Ctrl + D
+~~~
+
+to save the job.
+
+Schedule a Job for a Specific Date and Time
+
+~~~bash
+bash
+
+at 10:00 AM tomorrow
+~~~
+
+or
+
+~~~bash
+bash
+
+at 15:30 25/06/2026
+~~~
+
+View Scheduled at Jobs
+
+~~~bash
+bash
+
+atq
+~~~
+
+Example output:
+
+~~~text
+text
+
+1  Thu Jun 25 15:30:00 2026 a user
+~~~
+
+Remove an at Job
+
+~~~bash
+bash
+
+atrm 1
+~~~
+
+where 1 is the job number shown by atq.
+
+**Differences Between cron and at**
+
+|Feature|cron|at|
+|-------|----|---|
+|Purpose |Recurring tasks|One-time tasks|
+|Runs repeatedly|Yes|No|
+|Configuration|crontab|at command|
+|Best for|Backups, reports, maintenance|Delayed or scheduled one-time jobs|
+
+**Common Use Cases**
+
+Cron
+
+- Daily backups
+- Log rotation
+- Automated reports
+- System maintenance scripts
+
+At
+
+- Schedule a shutdown
+- Run a script later in the day
+- Execute a one-time maintenance task
+
+Example:
+
+~~~bash
+bash
+
+echo "shutdown -h now" | at 11:00 PM
+~~~
+
+This schedules a system shutdown at 11:00 PM
+
+Summary
+
+- Use cron for recurring tasks.
+- Use crontab -e to create or edit cron jobs.
+- Use at for one-time scheduled tasks.
+- Use atq to view scheduled jobs and atrm to remove them.
+- cron is ideal for automation, while at is ideal for delayed execution of a single task.
+
+### **What is the purpose of the /etc/fstab file? How do you mount and unmount file systems?**
+
+**The Purpose of /etc/fstab**
+
+The /etc/fstab (File System Table) file is a configuration file that defines how disk partitions, file systems, and storage devices should be mounted when the Linux system boots.
+
+It helps Linux automatically mount file systems without requiring manual intervention each time the system starts.
+
+**View the fstab File**
+
+~~~bash
+bash
+
+cat /etc/fstab
+~~~
+
+**Example Entry**
+
+UUID=1234-5678  /data  ext4  defaults  0  2
+
+Fields:
+
+|Field|Description|
+|-----|-------|
+|Device/UUID|Disk or partition identifier|
+|Mount Point|Directory where the file system is mounted|
+|File System Type|e.g., ext4, xfs, ntfs|
+|Options|Mount options (defaults, rw, ro, etc.)|
+|Dump|Backup utility setting (usually 0)|
+|Pass|File system check order during boot|
+
+**Common Mount Options**
+
+|Option|Meaning|
+|-------|------|
+|defaults|Standard read-write settings|
+|ro|Read-only|
+|rw|Read-write|
+|noauto|Do not mount automatically at boot|
+|user|Allow non-root users to mount|
+
+**Mounting File Systems**
+
+Mounting makes a storage device accessible through a directory in the Linux file system.
+
+**Basic Mount Command**
+
+~~~Bash
+bash
+
+sudo mount device mount_point
+~~~
+
+Example:
+
+~~~bash
+Bash 
+sudo mount /dev/sdb1 /mnt/data
+~~~
+
+This mounts the partition /dev/sdb1 at /mnt/data.
+
+**Mount All File Systems in fstab**
+
+~~~bash
+
+Bash 
+sudo mount -a
+~~~
+
+This mounts all file systems listed in /etc/fstab that are not already mounted.
+
+**View Mounted File Systems**
+
+~~~bash
+Bash
+
+mount
+~~~
+
+or
+
+~~~bash
+Bash
+
+df -h
+~~~
+
+**Unmounting File Systems**
+
+Before removing a storage device, it should be unmounted.
+
+Basic Unmount Command
+
+~~~bash
+Bash
+
+sudo umount /mnt/data
+~~~
+
+Or 
+
+~~~bash
+Bash
+
+sudo umount /dev/sdb1
+~~~
+
+If the Device Is Busy
+
+Check which processes are using it:
+
+~~~bash
+Bash 
+
+lsof /mnt/data
+~~~
+
+or
+
+~~~bash
+Bash 
+
+fuser -m /mnt/data
+~~~
+
+Then stop the processes and try unmounting again.
+
+Force Unmount (Use Carefully)
+
+~~~bash
+Bash 
+
+sudo umount -f /mnt/data
+~~~
+
+Lazy Unmount
+
+~~~bash
+Bash 
+
+sudo umount -l /mnt/data
+~~~
+
+This detaches the file system immediately and cleans up references when no longer in use.
+
+Example Workflow
+
+1.	**Create a mount point:**
+
+~~~bash
+Bash 
+
+sudo mkdir /mnt/backup
+~~~
+
+2. **Mount a partition:**
+
+~~~bash
+Bash 
+
+sudo mount /dev/sdb1 /mnt/backup
+~~~
+
+3. **Verify:**
+
+~~~bash
+Bash 
+
+df -h
+~~~
+
+4. **Add it to /etc/fstab for automatic mounting:**
+
+~~~text
+Text
+
+UUID=1234-5678 /mnt/backup ext4 defaults 0 2
+~~~
+
+5. **Test the configuration:**
+
+~~~bash
+Bash 
+
+sudo mount -a
+~~~
+
+6. **Unmount when needed:**
+
+~~~bash
+Bash 
+
+sudo umount /mnt/backup
+~~~
+
+**Summary**
+
+- /etc/fstab stores file system mount configurations for automatic mounting at boot.
+- mount attaches a file system to a directory.
+- umount detaches a mounted file system.
+- mount -a mounts all file systems defined in /etc/fstab.
+- Always unmount removable storage before disconnecting it to prevent data loss
