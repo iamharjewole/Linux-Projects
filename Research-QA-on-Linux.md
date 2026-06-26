@@ -1373,3 +1373,1395 @@ sudo umount /mnt/backup
 - umount detaches a mounted file system.
 - mount -a mounts all file systems defined in /etc/fstab.
 - Always unmount removable storage before disconnecting it to prevent data loss
+
+## **Networking**
+
+### Describe the basic networking commands in Linux such as ifconfig, ip, ping, netstat, and ss
+
+Linux provides several networking commands that help users configure, monitor, and troubleshoot network connections.
+
+1. **ifconfig (Interface Configuration)**: ifconfig is a traditional command used to view and configure network interfaces.
+
+**Common Uses:**
+
+- Display network interface information:
+
+~~~Bash
+Bash 
+
+ifconfig
+~~~
+
+View a specific interface:
+
+~~~Bash
+Bash 
+
+ifconfig eth0
+~~~
+
+Assign an IP address:
+
+~~~Bash
+Bash 
+
+sudo ifconfig eth0 192.168.1.10
+~~~
+
+Note: ifconfig is deprecated on many modern Linux distributions and has largely been replaced by the ip command.
+
+2. **ip Command**: The ip command is the modern tool for managing network interfaces, routes, and IP addresses.
+
+Common Uses:
+
+- Show IP addresses:
+
+~~~Bash
+Bash 
+
+ip addr show
+~~~
+
+Display network interfaces:
+
+~~~Bash
+Bash
+
+ip link show
+~~~
+
+Show routing table:
+
+~~~Bash
+Bash 
+
+ip route show
+~~~
+
+Bring an interface up:
+
+~~~Bash
+Bash 
+
+sudo ip link set eth0 up
+~~~
+
+Advantages:
+
+- More powerful and flexible than ifconfig.
+- Supports IPv4 and IPv6.
+
+3. **ping**: ping tests connectivity between your system and another host by sending ICMP echo requests.
+
+Syntax:
+
+~~~Bash
+Bash 
+
+ping google.com
+~~~
+
+Limit the number of packets:
+
+~~~Bash
+Bash 
+
+ping -c 4 google.com
+~~~
+
+Uses:
+
+- Verify network connectivity.
+- Measure response time (latency).
+- Troubleshoot network issues.
+
+4. **netstat (Network Statistics)**:netstat displays network connections, routing tables, interface statistics, and listening ports.
+
+Common Uses:
+
+- Show all active connections:
+
+~~~Bash
+Bash 
+
+netstat -a
+~~~
+
+Show listening ports:
+
+~~~Bash
+Bash 
+
+netstat -l
+~~~
+
+Display routing table:
+
+~~~Bash
+Bash 
+
+netstat -r
+~~~
+
+Show network statistics:
+
+~~~Bash
+Bash
+
+netstat -s
+~~~
+
+Note: Like ifconfig, netstat is considered outdated and is often replaced by ss
+
+5. ss (Socket Statistics)
+
+ss is a modern utility used to inspect network sockets and connections.
+
+Common Uses:
+
+- Show all TCP connections:
+
+~~~Bash
+Bash
+
+ss -t
+~~~
+
+Show all listening ports:
+
+~~~Bash
+Bash
+
+ss -l
+~~~
+
+Show TCP and UDP listening sockets:
+
+~~~Bash
+
+Bash
+
+ss -tuln
+~~~
+
+Display detailed socket information:
+
+~~~Bash
+Bash 
+
+ss -p
+~~~
+
+Advantages:
+
+- Faster and more efficient than netstat.
+- Provides detailed socket information.
+
+Summary Table
+
+|Command|Purpose|
+|-------|-------|
+|ifconfig|View and configure network interfaces (legacy)
+|ip|Modern tool for network configuration and routing|
+|ping|Test connectivity and network latency|
+|netstat|Display network connections and statistics (legacy)|
+|ss|Modern replacement for netstat; shows socket information|
+
+These commands are essential for Linux network administration, troubleshooting connectivity issues, and monitoring network activity.
+
+### How do you configure a static IP address in Linux?
+
+Configuring a static IP address in Linux ensures that the system always uses the same IP address instead of receiving one dynamically from a DHCP server.
+
+**Method 1: Using the ip Command (Temporary Configuration)**
+
+This configuration lasts until the system is rebooted.
+
+1. **Assign an IP address:**
+
+~~~Bash
+Bash 
+
+sudo ip addr add 192.168.1.100/24 dev eth0
+~~~
+
+2. **Bring the interface up:**
+
+~~~Bash
+Bash 
+
+sudo ip link set eth0 up
+~~~
+
+3. **Set the default gateway:**
+
+~~~Bash
+Bash 
+
+sudo ip route add default via 192.168.1.1
+~~~
+
+4. **Verify the configuration:**
+
+~~~Bash
+Bash
+
+ip addr show eth0
+ip route show
+~~~
+
+**Method 2: Ubuntu/Debian (Netplan)**
+
+Modern Ubuntu versions use Netplan.
+
+1. Edit the Netplan configuration file:
+
+~~~Bash
+Bash 
+
+sudo nano /etc/netplan/01-netcfg.yaml
+~~~
+
+2.	**Add or modify the configuration:**
+
+~~~Yaml
+Yaml
+
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: no
+      addresses:
+        - 192.168.1.100/24
+      routes:
+        - to: default
+          via: 192.168.1.1
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 8.8.4.4
+~~~
+
+3. **Apply the changes:**
+
+~~~Bash
+Bash
+
+sudo netplan apply
+~~~
+
+Method 3: RHEL/CentOS/Rocky Linux
+
+1. **Edit the interface configuration file:**
+
+~~~Bash
+Bash 
+
+sudo nano /etc/sysconfig/network-scripts/ifcfg-eth0
+~~~
+
+2. **Configure it as follows:**
+
+~~~Bash
+Bash
+
+DEVICE=eth0
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=192.168.1.100
+PREFIX=24
+GATEWAY=192.168.1.1
+DNS1=8.8.8.8
+DNS2=8.8.4.4
+~~~
+
+3. **Restart networking:**
+
+~~~Bash
+Bash 
+
+sudo systemctl restart NetworkManager
+~~~
+
+**Verify the Static IP Configuration**
+
+Check the assigned IP address:
+
+~~~Bash
+Bash
+
+ip addr show
+~~~
+
+Test connectivity:
+
+~~~Bash
+Bash 
+
+ping 8.8.8.8
+~~~
+
+Check the routing table:
+
+~~~Bash
+Bash 
+
+ip route
+~~~
+
+**Example Configuration**
+
+|Setting|Value|
+|-------|-----|
+|IP Address|192.168.1.100|
+|Subnet Mask|255.255.255.0 (/24)|
+|Gateway|192.168.1.1|
+|DNS Server 1|8.8.8.8|
+|DNS Server 2|8.8.4.4|
+
+A static IP is commonly used for servers, printers, network devices, and systems that need a fixed network address.
+
+### What are firewalls in Linux, and how do you configure them using iptables or firewalld?
+
+**Firewalls in Linux**
+
+A firewall is a security system that monitors and controls incoming and outgoing network traffic based on predefined rules. Firewalls help protect Linux systems from unauthorized access and network attacks.
+
+**Benefits of Firewalls**
+
+- Block unauthorized access.
+- Allow only trusted traffic.
+- Protect services and applications.
+- Monitor and control network communication.
+
+1. **using iptables**: iptables is a command-line utility used to configure the Linux kernel firewall.
+
+View Current Rules
+
+~~~Bash
+Bash
+
+sudo iptables -L
+~~~
+
+Allow SSH Traffic (Port 22)
+
+~~~Bash
+Bash 
+
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+~~~
+
+Allow HTTP Traffic (Port 80)
+
+~~~Bash
+Bash 
+
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+~~~
+
+Block an IP Address
+
+~~~Bash
+Bash 
+
+sudo iptables -A INPUT -s 192.168.1.50 -j DROP
+~~~
+
+Set Default Policy to Deny Incoming Traffic
+
+~~~Bash
+Bash 
+
+sudo iptables -P INPUT DROP
+~~~
+
+Save Rules
+
+On Debian/Ubuntu:
+
+~~~Bash
+Bash 
+
+sudo iptables-save > /etc/iptables/rules.v4
+~~~
+
+On CentOS/RHEL:
+
+~~~Bash
+Bash 
+
+sudo service iptables save
+~~~
+
+2. **Using firewalld**: firewalld is a modern firewall management tool that provides an easier interface than iptables.
+
+Start and Enable Firewalld
+
+~~~Bash
+Bash 
+
+sudo systemctl start firewalld
+sudo systemctl enable firewalld
+~~~
+
+Check Firewall Status
+
+~~~Bash
+Bash 
+
+sudo firewall-cmd --state
+~~~
+
+View Active Rules
+
+~~~Bash
+Bash 
+
+sudo firewall-cmd --list-all
+~~~
+
+Allow SSH Service
+
+~~~Bash
+Bash 
+
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --reload
+~~~
+
+Allow HTTP Traffic
+
+~~~Bash
+Bash 
+
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --reload
+~~~
+
+Open a Specific Port
+
+~~~Bash
+Bash 
+
+sudo firewall-cmd --permanent --add-port=8080/tcp
+sudo firewall-cmd --reload
+~~~
+
+Remove a Service
+
+~~~Bash
+Bash 
+
+sudo firewall-cmd --permanent --remove-service=http
+sudo firewall-cmd --reload
+~~~
+
+Block All Incoming Traffic Except Allowed Services
+
+Firewalld uses zones and default policies to control access. Configure zones according to your security requirements.
+
+**Comparison of iptables and firewalld**
+
+|Feature|iptables|firewalld|
+|-------|--------|---------|
+|Interface|Command-line rules|User-friendly management|
+|Complexity|More complex|Easier to configure|
+|Dynamic Updates|Limited|Supports changes without restarting|
+|Zones|No|Yes|
+|Recommended for Modern Systems|Less common|Yes|
+
+Example Scenario
+
+To allow SSH and web traffic while blocking other unsolicited incoming connections:
+
+Using iptables:
+
+~~~Bash
+Bash 
+
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+sudo iptables -P INPUT DROP
+~~~~
+
+Using firewalld:
+
+~~~Bash
+Bash 
+
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --reload
+~~~
+
+In modern Linux distributions such as Red Hat Enterprise Linux, Rocky Linux, and Fedora, firewalld is generally preferred because it is easier to manage and supports dynamic firewall updates.
+
+## Package Management
+
+### What are package managers in Linux? Compare apt, yum, and dnf.
+
+A package manager is a tool used to install, update, remove, and manage software packages on a Linux system. Package managers automatically handle dependencies, making software installation easier and more reliable.
+
+Functions of Package Managers
+
+- Install software packages.
+- Update installed software.
+- Remove software.
+- Manage dependencies.
+- Search for available packages.
+- Maintain system security through updates.
+
+1. **APT (Advanced Package Tool)**: APT is the package manager used by Debian-based distributions such as Ubuntu and Debian.
+
+Common Commands
+
+Update package lists:
+
+~~~Bash
+Bash 
+
+sudo apt update
+~~~
+
+Upgrade installed packages:
+
+~~~Bash
+Bash
+
+sudo apt upgrade
+~~~
+
+Install a package:
+
+~~~Bash
+Bash 
+
+sudo apt install nginx
+~~~
+
+Remove a package:
+
+~~~Bash
+Bash 
+
+sudo apt remove nginx
+~~~
+
+Search for a package:
+
+~~~Bash 
+Bash
+
+apt search nginx
+~~~
+
+2. **YUM (Yellowdog Updater Modified)**: YUM is the traditional package manager for Red Hat-based distributions such as older versions of CentOS and Red Hat Enterprise Linux.
+
+Common Commands
+
+Check for updates:
+
+~~~Bash
+Bash 
+
+sudo yum check-update
+~~~
+
+Install a package:
+
+~~~Bash 
+Bash 
+
+sudo yum install nginx
+~~~
+
+Update all packages:
+
+~~~Bash
+Bash
+
+sudo yum update
+~~~
+
+Remove a package:
+
+~~~Bash
+Bash 
+
+sudo yum remove nginx
+~~~
+
+Search for a package:
+
+~~~Bash
+Bash 
+
+yum search nginx
+~~~
+
+3. **DNF (Dandified YUM)**: DNF is the modern replacement for YUM and is used by newer versions of Fedora, Rocky Linux, and recent versions of Red Hat Enterprise Linux.
+
+Common Commands
+
+Check for updates:
+
+~~~Bash
+Bash 
+
+sudo dnf check-update
+~~~
+
+Install a package:
+
+~~~Bash
+Bash
+
+sudo dnf install nginx
+~~~
+
+Upgrade packages:
+
+~~~Bash
+Bash 
+
+sudo dnf upgrade
+~~~
+
+Remove a package:
+
+~~~Bash
+Bash 
+
+sudo dnf remove nginx
+~~~
+
+Search for a package:
+
+~~~Bash
+Bash 
+
+dnf search nginx
+~~~
+
+Comparison of APT, YUM, and DNF
+
+|Feature|APT|YUM|DNF|
+|-------|---|----|---|
+|Used By|Debian, Ubuntu|Older CentOS, RHEL|Fedora, Rocky Linux, Newer RHEL|
+|Package Format|.deb|.rpm|.rpm|
+|Dependency Resolution|Good|Good|Improved|
+|Performance|Fast|Moderate|Faster and more efficient|
+|Current Status|Actively used|Largely replaced|Modern standard|
+
+Summary
+
+- APT is used on Debian-based systems and manages .deb packages.
+- YUM is the older package manager for Red Hat-based systems and manages .rpm packages.
+- DNF is the modern successor to YUM, offering better performance, dependency handling, and package management features.
+
+Example Installation
+
+Ubuntu/Debian:
+
+~~~Bash
+Bash 
+
+sudo apt install nginx
+~~~
+
+RHEL/CentOS (older):
+
+~~~Bash
+Bash 
+
+sudo yum install nginx
+~~~
+
+Fedora/Rocky Linux/RHEL (newer):
+
+~~~Bash
+Bash 
+
+sudo dnf install nginx
+~~~
+
+All three package managers simplify software management by automatically downloading, installing, updating, and removing packages while handling dependencies.
+
+### How do you install, update, and remove packages using a package manager?
+
+Package managers make software installation and maintenance easy by automatically handling downloads, dependencies, updates, and removals.
+
+|Task|APT|YUM|DNF|
+|-----|----|----|---|
+|Install|apt install pkg|yum install pkg|dnf install pkg|
+|Update Repository Info|apt update|yum check-update|dnf check-update|
+|Upgrade Packages|apt upgrade|yum update|dnf upgrade|
+|Remove Package|apt remove pkg|yum remove pkg|dnf remove pkg|
+|Search Package|apt search pkg|yum search pkg|dnf search pkg|
+
+Example Workflow (Ubuntu/Debian)
+
+~~~Bash
+Bash 
+
+sudo apt update
+sudo apt install nginx
+sudo apt upgrade
+sudo apt remove nginx
+~~~
+
+This sequence updates the package list, installs Nginx, upgrades installed packages, and then removes Nginx when it is no longer needed.
+
+## Monitoring and Performance
+
+### What tools are available in Linux for monitoring system performance? Describe the use of top, htop, vmstat, and iostat
+
+Linux provides several command-line tools to monitor system performance, helping administrators track CPU, memory, disk, and process usage for troubleshooting and optimization.
+
+1. **top**: top is a built-in utility that displays real-time information about running processes and overall system resource usage.
+
+Uses
+
+- Monitor CPU and memory usage.
+- View running processes.
+- Identify processes consuming the most resources.
+- Monitor system load in real time.
+
+Command
+
+~~~Bash
+Bash 
+
+Top
+~~~
+
+Information Displayed
+
+- CPU usage
+- Memory and swap usage
+- System uptime
+- Load average
+- Running processes
+- Process ID (PID), user, CPU%, and memory%
+
+2. **htop**: htop is an enhanced, interactive version of top with a more user-friendly interface.
+
+Uses
+
+- Monitor CPU, memory, and swap usage.
+- Scroll through processes easily.
+- Search for specific processes.
+- Kill or manage processes interactively.
+- Display CPU usage with color-coded bars.
+
+Command
+
+~~~Bash
+Bash 
+
+htop
+~~~
+
+Note: htop may need to be installed first:
+
+- Ubuntu/Debian:
+
+~~~Bash
+Bash 
+
+sudo apt install htop
+~~~
+
+- Fedora/RHEL:
+
+~~~Bash
+Bash 
+
+sudo dnf install htop
+~~~
+
+Advantages over top
+
+- Easier to read.
+- Supports mouse interaction.
+- Color-coded display.
+- Better process management.
+
+3. **vmstat (Virtual Memory Statistics)**: vmstat reports information about processes, memory, paging, block I/O, CPU activity, and system performance.
+
+Uses
+
+- Monitor virtual memory usage.
+- Check CPU utilization.
+- Analyze paging and swapping activity.
+- View disk I/O statistics.
+
+Command
+
+~~~Bash
+Bash 
+
+vmstat
+~~~
+
+Display updates every 2 seconds:
+
+~~~Bash
+Bash 
+
+vmstat 2
+~~~
+
+Information Displayed
+
+- Running and blocked processes
+- Free and used memory
+- Swap activity
+- Disk read/write operations
+- CPU usage (user, system, idle)
+
+4. **iostat (Input/Output Statistics)**: iostat monitors CPU usage and disk input/output performance.
+
+Uses
+
+- Monitor disk read/write speeds.
+- Identify disk bottlenecks.
+- Analyze CPU utilization.
+- Measure device performance.
+
+Command
+
+~~~Bash
+Bash 
+
+iostat
+~~~
+
+Display extended statistics every 3 seconds:
+
+~~~Bash
+Bash 
+
+iostat -x 3
+~~~
+
+Information Displayed
+
+- CPU utilization
+- Disk throughput
+- Read/write rates
+- Device utilization
+- Average wait time
+
+Note: iostat is part of the sysstat package and may need to be installed.
+
+**Comparison Table**
+
+|Tool|Primary Purpose|Key Features|
+|----|--------------|------------|
+|top|Monitor processes and system resources|Real-time CPU, memory, and process information|
+|htop|Interactive process monitoring|Color display, scrolling, search, process management|
+|vmstat|Monitor memory and CPU performance|Virtual memory, paging, swapping, CPU, and I/O statistics|
+|iostat|Monitor disk I/O and CPU usage|Disk performance, throughput, and device utilization|
+
+Summary
+
+- top provides a real-time view of system processes and resource usage.
+- htop offers a more interactive and user-friendly interface for monitoring and managing processes.
+- vmstat focuses on memory, CPU, paging, and overall system performance.
+- iostat is used to analyze CPU usage and disk I/O performance, making it useful for diagnosing storage-related performance issues.
+
+These tools are essential for Linux system administrators to monitor system health, identify performance bottlenecks, and troubleshoot resource usage.
+
+### How do you check disk usage and availability using commands like df and du?
+
+The df and du commands are commonly used in Linux to monitor disk space and storage usage.
+
+1. **df (Disk Filesystem)**:The df command displays the amount of disk space used and available on mounted file systems.
+
+Common Uses
+
+Show disk usage for all file systems:
+
+~~~Bash
+Bash 
+
+df
+~~~
+
+Display disk usage in a human-readable format (KB, MB, GB):
+
+~~~Bash
+Bash 
+
+df -h
+~~~
+
+Show the file system type along with usage:
+
+~~~Bash
+Bash 
+
+df -Th
+~~~
+
+Example Output
+
+Filesystem      Size  Used  Avail  Use%  Mounted on
+/dev/sda1        50G   20G    28G   42%  /
+
+Key Columns:
+
+- Filesystem: Storage device or partition.
+- Size: Total disk size.
+- Used: Space currently in use.
+- Avail: Free space available.
+- Use%: Percentage of disk space used.
+- Mounted on: Directory where the file system is mounted
+
+2. du (Disk Usage)
+
+The du command shows how much disk space is used by files and directories.
+
+Common Uses
+
+Check the size of the current directory:
+
+~~~Bash
+Bash 
+
+du
+~~~
+
+Display sizes in a human-readable format:
+
+~~~Bash
+Bash 
+
+du -h
+~~~
+
+Show only the total size of a directory:
+
+~~~Bash
+Bash 
+
+du -sh /home/user
+~~~
+
+Display the size of each subdirectory:
+
+~~~Bash
+Bash 
+
+du -h --max-depth=1
+~~~
+
+Example Output
+
+500M    Documents
+1.2G    Downloads
+2.0G    Videos
+
+**Difference Between df and du**
+
+|Command|Purpose|Example|
+|-------|-------|-------|
+|df|Shows free and used space on entire file systems|df -h|
+|du|Shows disk usage of specific files and directories|du -sh /home/user|
+
+Find the size of your home directory
+
+~~~Bash
+Bash 
+
+du -sh ~
+~~~
+
+Display the sizes of all directories in the current location
+
+~~~Bash
+Bash 
+
+du -h --max-depth=1
+~~~
+
+Summary
+
+- df (Disk Filesystem): Reports total, used, and available space on mounted file systems. It is useful for checking whether a disk or partition is running out of space.
+- du (Disk Usage): Reports the space used by individual files and directories. It is useful for identifying which folders or files are consuming the most storage.
+
+Together, df and du are essential tools for monitoring and managing disk space on Linux systems.
+
+## Security
+
+### Explain the concept of SSH. How do you set up an SSH server and client in Linux?
+
+SSH (Secure Shell) is a secure network protocol that allows users to remotely access and manage another computer over an encrypted connection. It replaces older, insecure protocols such as Telnet by encrypting all communication between the client and the server.
+
+Benefits of SSH
+
+- Secure remote login.
+- Encrypted communication.
+- Secure file transfer (using SCP or SFTP).
+- Remote command execution.
+- Supports password and public key authentication.
+
+SSH Components
+
+- SSH Server: Runs on the remote machine and listens for incoming SSH connections (usually on port 22).
+- SSH Client: The program used to connect to an SSH server.
+
+Setting Up an SSH Server
+
+Ubuntu/Debian
+
+1. Install the OpenSSH server
+
+~~~Bash
+Bash
+
+sudo apt update
+sudo apt install openssh-server
+~~~
+
+2. Start the SSH service
+
+~~~Bash
+Bash 
+
+sudo systemctl start ssh
+~~~
+
+3. Enable SSH to start at boot
+⁠
+~~~Bash
+Bash 
+
+sudo systemctl enable ssh
+~~~
+
+4. Check the service status
+
+~~~Bash
+Bash 
+
+sudo systemctl status ssh
+~~~
+
+Fedora/RHEL/Rocky Linux
+
+Install the OpenSSH server
+
+~~~Bash
+Bash
+
+sudo dnf install openssh-server
+~~~
+
+Start the service
+
+~~~Bash
+Bash 
+
+sudo systemctl start sshd
+~~~
+
+Enable it at boot
+
+~~~Bash
+Bash 
+
+sudo systemctl enable sshd
+~~~
+
+Check its status
+
+~~~bash
+bash
+
+sudo systemctl status sshd
+~~~
+
+Configuring the Firewall
+
+Allow SSH traffic through the firewall.
+
+Using firewalld:
+
+~~~Bash
+Bash 
+
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --reload
+~~~
+
+Using iptables:
+
+~~~Bash
+Bash 
+
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+~~~
+
+Setting Up an SSH Client
+
+Most Linux distributions already include the OpenSSH client.
+
+If it is not installed:
+
+Ubuntu/Debian
+
+~~~Bash
+Bash 
+
+sudo apt install openssh-client
+~~~
+
+Fedora/RHEL
+
+~~~Bash
+Bash 
+
+sudo dnf install openssh-clients
+~~~
+
+Connecting to a Remote Server
+
+Syntax:
+
+~~~Bash
+Bash 
+
+ssh username@server_ip
+~~~
+
+Example:
+
+~~~Bash
+Bash 
+
+ssh sam@192.168.1.100
+~~~
+
+The first time you connect, SSH asks whether you trust the server. Type:
+
+yes
+
+Then enter the user’s password.
+
+Setting Up Passwordless SSH (SSH Keys)
+
+1. Generate an SSH key pair
+
+~~~Bash
+Bash 
+
+ssh-keygen
+~~~
+
+This creates:
+
+- Private key: ~/.ssh/id_rsa
+- Public key: ~/.ssh/id_rsa.pub
+
+2. Copy the public key to the remote server
+ssh-copy-id username@server_ip
+
+Example:
+
+~~~Bash
+Bash 
+
+ssh-copy-id sam@192.168.1.100
+~~~
+
+After this, you can log in without entering your password
+
+Common SSH Commands
+
+|Command|Purpose|
+|-------|-------|
+|ssh user@host|Connect to a remote host|
+|ssh -p 2222 user@host|Connect using a custom port|
+|ssh-keygen|Generate SSH key pair|
+|ssh-copy-id user@host|Copy public key to the server|
+|scp file user@host:/path|Securely copy a file to a remote host|
+|sftp user@host|Start a secure file transfer session|
+
+Example Workflow
+
+1.	Install the SSH server:
+
+~~~Bash
+Bash 
+
+sudo apt install openssh-server
+~~~
+
+Start the service:
+
+~~~Bash
+Bash 
+
+sudo systemctl start ssh
+~~~
+
+Enable it at boot:
+
+~~~Bash
+Bash 
+
+sudo systemctl enable ssh
+~~~
+
+Connect from another Linux machine:
+
+~~~Bash
+Bash 
+
+ssh user@192.168.1.100
+~~~
+
+(Optional) Set up passwordless authentication:
+
+~~~Bash
+Bash 
+
+ssh-keygen
+ssh-copy-id user@192.168.1.100
+~~~
+
+Summary
+
+SSH is a secure protocol for remote administration of Linux systems. To use it:
+
+- Install and start the OpenSSH server (openssh-server) on the remote machine.
+- Ensure the firewall allows TCP port 22.
+- Use the OpenSSH client (ssh) to connect with ssh username@host.
+- For improved security and convenience, configure SSH key-based authentication instead of relying on passwords.
+
+### What are SELinux and AppArmor? How do they enhance security in a Linux system?
+
+SELinux (Security-Enhanced Linux) and AppArmor (Application Armor) are Linux Security Modules (LSMs) that provide Mandatory Access Control (MAC) to enhance system security.
+
+Unlike traditional Linux permissions, which rely on file ownership and user/group permissions (Discretionary Access Control (DAC)), SELinux and AppArmor enforce additional security policies that restrict what users and applications can do, even if they have elevated privileges.
+
+1. **SELinux (Security-Enhanced Linux)**: SELinux is a security framework originally developed by the National Security Agency and is commonly used on Red Hat Enterprise Linux, Fedora, CentOS, and Rocky Linux.
+
+How SELinux Works
+
+- Labels files, processes, and resources with security contexts.
+- Uses policies to determine what actions are allowed.
+- Restricts applications to only the resources they are explicitly permitted to access.
+
+SELinux Modes
+
+- Enforcing: Security policies are enforced, and unauthorized actions are blocked.
+- Permissive: Policy violations are logged but not blocked.
+- Disabled: SELinux is turned off.
+
+Common Commands
+Check SELinux status:
+
+~~~Bash
+Bash
+
+sestatus
+~~~
+
+Temporarily switch to permissive mode:
+
+~~~Bash
+Bash 
+
+sudo setenforce 0
+~~~
+
+Return to enforcing mode:
+
+~~~Bash
+Bash
+
+sudo setenforce 1
+~~~
+
+2. **AppArmor (Application Armor)**: AppArmor is another MAC system that is commonly used on Ubuntu and Debian.
+
+How AppArmor Works
+
+- Uses profiles to define what resources an application can access.
+- Profiles are based on file paths, making them easier to understand and manage than SELinux labels.
+- Restricts applications to only the permissions specified in their profiles.
+
+AppArmor Modes
+
+- Enforce: Blocks actions that violate the profile.
+- Complain: Allows actions but logs policy violations for review.
+
+Common Commands
+
+Check AppArmor status:
+
+~~~Bash
+Bash 
+
+sudo aa-status
+~~~
+
+Enable a profile:
+
+~~~Bash
+Bash
+
+sudo aa-enforce /etc/apparmor.d/profile_name
+~~~
+
+Switch a profile to complain mode:
+
+~~~Bash
+Bash 
+
+sudo aa-complain /etc/apparmor.d/profile_name
+~~~
+
+Comparison of SELinux and AppArmor
+
+|Feature|SELinux|AppArmor|
+|-------|-------|--------|
+|Access Control|Label-based|Path-based|
+|Complexity|More complex|Easier to configure|
+|Default On|RHEL, Fedora, Rocky Linux|Ubuntu, Debian|
+|Security|Very fine-grained|Strong but simpler|
+|Learning Curve|Steeper|Easier for beginners|
+
+How They Enhance Security
+
+Both SELinux and AppArmor improve Linux security by:
+
+- Preventing unauthorized access to files and system resources.
+- Limiting the damage if an application is compromised.
+- Enforcing the principle of least privilege, ensuring applications have only the permissions they need.
+- Reducing the risk of malware spreading or attackers escalating privileges.
+- Logging security policy violations to help administrators detect and investigate suspicious activity.
+
+Example
+
+Suppose a web server is compromised:
+
+- Without SELinux or AppArmor: The attacker may be able to access sensitive system files or execute unauthorized actions.
+- With SELinux or AppArmor: The web server process is confined by a security policy and can access only the files and resources explicitly permitted, helping contain the attack.
+
+Summary
+
+- SELinux is a label-based Mandatory Access Control system that provides highly detailed and robust security policies, making it well suited for enterprise environments.
+- AppArmor is a path-based Mandatory Access Control system that is simpler to configure while still providing strong application isolation.
+- Both tools add an important layer of protection beyond standard Linux file permissions, helping safeguard systems from unauthorized access and limiting the impact of security breaches.
+
+## Backup and Recovery
+
+### How do you perform backups in Linux? Describe the use of tools like rsync, tar, and dd.
+
+### What are some strategies for system recovery in case of a failure?
