@@ -193,6 +193,8 @@ exampledir/subdir:
 total 0
 -rwxr-xr-x 1 owner group 0 Oct 15 12:34 file.txt
 
+I did sudo chmod -R 755 exampledir, then ls -lR
+
 ![alt text](images/step16.png)
 
 ### Step 17: Default Permissions (umask)
@@ -214,5 +216,7 @@ ls -l newfile
 Expected Output:
 
 -rw-r----- 1 owner group 0 Oct 15 12:34 newfile
+
+I did umask, umask 0027, touch newfile and ls -l
 
 ![alt text](images/step17.png)
