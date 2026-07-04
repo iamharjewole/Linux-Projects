@@ -206,18 +206,126 @@ You can do this by creating a test PHP file in your document root. Open a new fi
 nano /var/www/your_domain/info.php
 ~~~
 
-Type or paste the following lines into the new file. This is valid PHP code that will return information about your server:
-
+~~~bash
 <?php
 phpinfo();
+~~~
 
-When you are finished, save and close the file by typing CTRL+X and then y and ENTER to confirm.
+Then you are finished, save and close the file by typing CTRL+X and then y and ENTER to confirm.
 
-ou can now access this page in your web browser by visiting the domain name or public IP address you’ve set up in your Nginx configuration file, followed by /info.php:
+I did nano /var/www/your_domain/info.php and paste the PHP commands in it
 
-http://server_domain_or_IP/info.php
+![alt text](images/nano-php2.png)
 
-You will see a web page containing detailed information about your server:
+You can now access this page in your web browser by visiting the domain name or public IP address you’ve set up in your Nginx configuration file, followed by /info.php:
 
+I did hostname -I to get my Ip address and i added /info.php to my ip address to show the php information on the browser
 
+http://192.168.100.49/info.php
 
+![alt text](images/nginx-land2.png)
+
+I did sudo rm /var/www/your_domain/info.php
+
+![alt text](images/error-rm.png)
+
+### Step 6 — Testing Database Connection from PHP (Optional)
+
+We’ll create a database named example_database and a user named example_user, but you can replace these names with different values.
+
+First, connect to the MySQL console using the root account:
+
+I did mysql -u root -p and enter my password to access the mysql console
+
+I did CREATE DATABASE example_database; but it was existing before, i created new database sample_database
+
+![alt text](images/mysq-database.png)
+
+I did CREATE USER 'sample_user'@'%' IDENTIFIED WITH mysql_native_password BY 'Omolayo@2026!';
+ser'@'%';
+
+I did GRANT ALL PRIVILEGES ON *.* TO 'sample_user'@'%';
+
+![alt text](images/create-grant-mysql.png)
+
+I did GRANT ALL ON sample_database.* TO 'sample_user'@'%';
+
+![alt text](images/grant-mysql.png)
+
+I did mysql -u example_user -p and put in my passwoord to access the database
+
+![alt text](images/sample-mysql-pass.png)
+
+I did SHOW DATABASES;
+
+![alt text](images/show-database.png)
+
+I did CREATE TABLE sample_database.todo_list (
+    item_id INT AUTO_INCREMENT,
+    content VARCHAR(255),
+    PRIMARY KEY(item_id)
+);
+
+![alt text](images/mysql-table.png)
+
+I did INSERT INTO Sample_database.todo_list (content) VALUES ("My first important item");
+
+![alt text](images/new-table-mysql.png)
+
+I did SELECT * FROM sample_database.todo_list;
+
+![alt text](images/select-table.png)
+
+I did add more todo_list
+
+ INSERT INTO Sample_database.todo_list (content) VALUES ("My second important item");
+
+ INSERT INTO Sample_database.todo_list (content) VALUES ("My third important item");
+
+ INSERT INTO Sample_database.todo_list (content) VALUES ("and this one more thing");
+
+ INSERT INTO Sample_database.todo_list (content) VALUES ("Thank you");
+
+![alt text](images/insert-more-mysql.png)
+
+I did SELECT * FROM sample_database.todo_list;
+
+![alt text](images/select-table2.png)
+
+I did nano /var/www/your_domain/todo.php, place the following content in it
+
+~~~bash
+<?php
+$databaseHost = 'localhost';
+$databaseName = 'example_database';
+$databaseUser = 'example_user';
+$databasePassword = 'password';
+
+try {
+    $db = new PDO("mysql:host=$databaseHost;dbname=$databaseName", $databaseUser, $databasePassword);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $query = "SELECT * FROM todo_list";
+    $stmt = $db->query($query);
+
+    echo "<h1>Todo List</h1>";
+
+    echo "<ul>";
+    while ($row = $stmt->fetch()) {
+        echo "<li>" . $row['content'] . "</li>";
+    }
+    echo "</ul>";
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+}
+?>
+~~~
+
+Then i replace them with my actual sample_database, sample_user and my actual password (Omolayo@123)
+
+![alt text](images/sample-todo.png)
+
+I checked my browser to check my output
+http://192.168.100.49/todo.php
+
+![alt text](images/todolist.png)
