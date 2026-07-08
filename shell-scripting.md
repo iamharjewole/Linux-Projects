@@ -29,7 +29,7 @@ Testing: Test the script on virtual machines or actual servers to ensure it func
 
 Documentation: Create detailed documentation for users, including a user guide on how to run the script, input parameters, and interpret the output.
 
-I copied the project task to chatgpt for clear explanation and execution
+This is my shell script for the above project
 
 ~~~bash
 #!/bin/bash
@@ -155,15 +155,26 @@ echo "Remote server configuration completed."
 echo "====================================="
 ~~~
 
-The above shell script meet these requirement
+The above shell script iclude these features
 
-- Remote Server Access: The script uses SSH to remotely access the server.
+- Remote server access using SSH
+- Parameterized username and server address
+- Automatic system update
+- Automatic package upgrade
+- Automatic Nginx installation
+- Starts and enables the web server
+- Displays installation status
+- Error handling
+- Clear output messages
+- Modular sections with comments
+
+- ### **Remote Server Access:** The script uses SSH to remotely access the server
 
 ~~~bash
 ssh username@server
 ~~~
 
-- Parameterization: Instead of hardcoding the server address, the script accepts:
+- ### **Parameterization:** Instead of hardcoding the server address, the script accepts
 
     - Username
     - Server IP Address or Hostname
@@ -172,9 +183,9 @@ ssh username@server
 ./deploy_webserver.sh ubuntu ubuntu 192.168.100.49
 ~~~
 
-- Error Handling: The script checks for several common errors.
+- ### **Error Handling: The script checks for several common errors**
 
-Missing Parameters
+    - Missing Parameters
 
 ~~~bash
 Error: Missing required parameters.
@@ -212,15 +223,13 @@ Possible causes:
 
 Package Installation Failure
 
-Since
+Since set -e is enabled, the script stops immediately if any command fails, preventing later commands from running on a partially configured system.
 
 ~~~bash
 set -e
 ~~~
 
-is enabled, the script stops immediately if any command fails, preventing later commands from running on a partially configured system.
-
-- Testing Procedure: Test 1 – Valid Server
+- ### **Testing Procedure: Test 1 – Valid Server**
 
 ~~~bash
 chmod +x server_setup.sh
@@ -268,7 +277,7 @@ SSH not running
 
 - Test 3 – Invalid Username:
 
-~~~bash 
+~~~bash
 ./server_setup.sh admin 192.168.100.49
 ~~~
 
@@ -325,9 +334,9 @@ ssh ubuntu@192.168.100.49
 
 If configured correctly, no password will be requested.
 
-TO EXECUTE THIS SCRIPT:
+### **TO EXECUTE THIS SCRIPT :**
 
-I created the file and named it "server_setup.sh"
+- **I created a file and named it "server_setup.sh"**
 
 ~~~bash
 touch server_setup.sh
@@ -335,7 +344,7 @@ touch server_setup.sh
 
 ![alt text](images/server_file.png)
 
-I did vi server_setup.sh to opened the server_setup.sh file, copied the shell script to it.
+- **I did vi server_setup.sh to opened my server_setup.sh file, insert the shell script to it.**
 
 ~~~bash
 vi server_setup.sh
@@ -343,7 +352,7 @@ vi server_setup.sh
 
 ![alt text](images/setup-save.png)
 
-I did chmod +x server_setup.sh to make it executable.
+- **I did chmod +x server_setup.sh to make the file executable.**
 
 ~~~bash
 chmod +x server_setup.sh
@@ -351,33 +360,29 @@ chmod +x server_setup.sh
 
 ![alt text](images/setup-addx.png)
 
-I used ./server_setup.sh ubuntu 192.168.100.49 to execute the shell script
+- **I used ./server_setup.sh ubuntu 192.168.100.49 to execute the shell script**
 
 ~~~bash
 ./server_setup.sh ubuntu 192.168.100.49
 ~~~
 
-It failed to run with possible cuases
+- **It failed to run with possible cuases**
 
 ![alt text](images/setup-failed.png)
 
-I did troubleshoot on chatgpt to help fix the issues
+- **I did troubleshoot on chatgpt to help fix the issues**
 
-The issues is no user named ubuntu on the server.
+- **The issues is no username ubuntu on the server, The server hostname is vagrant**
 
-The server hostname is vagrant
-
-It says i should run the script like thi
+- **I changed the username from vagrant to Ubuntu and run the script**
 
 ~~~bash
 ./server_setup.sh vagrant 192.168.100.49
 ~~~
 
-It failed to run again, I did troubleshoot with the results. the result was my ssh is having connection issues.
+- **It failed to run again, I did troubleshoot with the results. the result was my ssh is having connection issues.**
 
-I configured my vagrant ssh:
-
-I did
+- **I configured my vagrant ssh:** I did ssh-keygen -t rsa -b 4096 to generate ssh keys
 
 ~~~bash
 ssh-keygen -t rsa -b 4096
@@ -385,25 +390,22 @@ ssh-keygen -t rsa -b 4096
 
 ![alt text](images/sshkey.png)
 
-After generating the keys, i copied it to the server
+- **After generating the keys, i copied it to the server**
 
 ~~~bash
 ssh-copy-id vagrant@192.168.100.49
 ~~~
 
-I did
+- **I did ssh vagrant@192.168.100.49 to confirm my script can work without password.**
 
 ~~~bash
 ssh vagrant@192.168.100.49
 ~~~
 
-to confirm my script can work without password.
-
-I did run my shell script again 
+- **I re-run my shell script again and it worked out perfectly**
 
 ~~~bash
 ./server_setup.sh vagrant 192.168.100.49
 ~~~
 
 ![alt text](images/web-server-complete.png)
-
