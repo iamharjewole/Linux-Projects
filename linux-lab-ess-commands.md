@@ -121,22 +121,21 @@ I did
 cat /var/log/system_metrics.log
 ~~~
 
-### Permission to the see the log was denied
+### Permission to the see the logs was denied
 
 ![alt text](images/system-log.png)
 
-I created log file "/var/log/system_metrics" with sudo privileges, and change the ownership to my user
+#### I created log file "/var/log/system_metrics" with sudo privileges, and change the ownership to my user
 
 ~~~bash
 sudo touch /var/log/system_metrics.log
 sudo chown vagrant:vagrant /var/log/system_metrics.log
 ~~~
 
-I did
+**I did**
 
 ~~~bash
 cat /var/log/system_metrics.log
 ~~~
 
 ![alt text](images/system-log-check.png)
-
