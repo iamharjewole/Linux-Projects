@@ -4,7 +4,7 @@
 
 ### Steps
 
-- **Step 1: List Disks**
+- ### Step 1: List Disks
 
     **List all disks and partitions.**
 
@@ -16,7 +16,7 @@
 
     ![alt text](images/lsblk.png)
 
-- **Step 2: Create a Partition**
+- ### Step 2: Create a Partition
 
     **Use fdisk to create a new partition on an available disk (e.g., /dev/sdb)**
 
@@ -26,19 +26,19 @@
 
     **This means;**
 
-    ***sudo – Runs the command with superuser (root) privileges. This is required because modifying disk partitions is a privileged operation***.
+    *sudo – Runs the command with superuser (root) privileges. This is required because modifying disk partitions is a privileged operation*.
 
-    ***fdisk – A Linux command-line utility used to create, delete, view, and modify disk partitions on storage devices such as hard drives, SSDs, and USB drives***.
+    *fdisk – A Linux command-line utility used to create, delete, view, and modify disk partitions on storage devices such as hard drives, SSDs, and USB drives*.
 
-    ***/dev/sdb – The disk device you want to work with.***
+    */dev/sdb – The disk device you want to work with.*
 
-    ***/dev is the directory where Linux represents hardware devices***.
+    */dev is the directory where Linux represents hardware devices*.
 
-    ***sdb usually refers to the second storage device detected by the system***.
+    *sdb usually refers to the second storage device detected by the system*.
 
-    ***/dev/sda → First disk***
-    ***/dev/sdb → Second disk***
-    ***/dev/sdc → Third disk***
+    */dev/sda → First disk*
+    */dev/sdb → Second disk*
+    */dev/sdc → Third disk*
 
     **I did sudo fdisk /dev/sdb to create another disk partition**
 
@@ -58,7 +58,7 @@
 
     ![alt text](images/sdb-part.png)
 
-- **Step 3: Format the Partition**
+- ### Step 3: Format the Partition
 
     **Format the new partition with the ext4 filesystem**.
 
@@ -68,19 +68,19 @@
 
     **This means;**
 
-    ***sudo – Runs the command with administrator (root) privileges, which are required for formatting disks.***
+    *sudo – Runs the command with administrator (root) privileges, which are required for formatting disks.*
 
-    ***mkfs – Stands for "make filesystem." It creates a filesystem on a partition***.
+    *mkfs – Stands for "make filesystem." It creates a filesystem on a partition*.
 
-    ***.ext4 – Specifies the type of filesystem to create. ext4 is the default and most widely used filesystem on Linux because it is reliable and performs well***.
+    *.ext4 – Specifies the type of filesystem to create. ext4 is the default and most widely used filesystem on Linux because it is reliable and performs well*.
 
-    ***/dev/sdb1 – The first partition on the second disk (/dev/sdb)***.
+    */dev/sdb1 – The first partition on the second disk (/dev/sdb)*.
 
     I did sudo mkfs.ext4 /dev/sdb1 to format the disk partition
 
     ![alt text](images/ext4.png)
 
-- **Step 4: Mount the Partition**
+- ### Step 4: Mount the Partition
 
     **Create a mount point and mount the partition**.
 
@@ -91,23 +91,23 @@
 
     **This means;**
 
-    ***sudo → Runs the command with administrator privileges***.
+    *sudo → Runs the command with administrator privileges*.
 
-    ***mkdir → Means make directory***.
+    *mkdir → Means make directory*.
 
-    ***/mnt/mydisk → Creates a folder named mydisk inside /mnt***.
+    */mnt/mydisk → Creates a folder named mydisk inside /mnt*.
 
-    ***This folder acts as a mount point, which is simply a location where the contents of a disk or partition will appear***.
+    *This folder acts as a mount point, which is simply a location where the contents of a disk or partition will appear*.
 
-    ***Before mounting, /mnt/mydisk is just an empty directory***.
+    *Before mounting, /mnt/mydisk is just an empty directory*.
 
-    ***mount → Attaches a filesystem to a directory***.
+    *mount → Attaches a filesystem to a directory*.
 
-    ***/dev/sdb1 → The partition you created and formatted***.
+    */dev/sdb1 → The partition you created and formatted*.
 
-    ***/mnt/mydisk → The directory where the partition will be accessible***.
+    */mnt/mydisk → The directory where the partition will be accessible*.
 
-    ***After running this command, everything stored on /dev/sdb1 becomes available inside /mnt/mydisk.***
+    *After running this command, everything stored on /dev/sdb1 becomes available inside /mnt/mydisk.*
 
     **I did sudo mkdir /mnt/mydisk to create a folder/ directory for my mount point.**
 
@@ -115,7 +115,7 @@
 
     ![alt text](images/mnt-disk.png)
 
-- **Step 5: Mount the Partition**
+- ### Step 5: Mount the Partition
 
     **Verify the Mount and check if the partition is mounted.**
 
@@ -127,7 +127,7 @@
 
     ![alt text](images/mnt-disk2.png)
 
-- **Step 5: Add to /etc/fstab**
+- ### Step 6: Add to /etc/fstab
 
     **Add the partition to /etc/fstab for automatic mounting at boot**.
 
