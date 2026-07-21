@@ -8,7 +8,7 @@
 
     **Write a script to back up a directory to a specified location.**
 
-    **I did the following below commands, to create a directory, create a shell file and add my shell scripts in it**
+    **I did the following below commands, to create a shell file and add my shell scripts in it**
 
     ~~~bash
     touch backup.sh
@@ -47,7 +47,7 @@
 
     **To solve this, i created the /home/user/projects directory.**
 
-    **I did the following below commands to Create a directory (and any missing parent directories), Change ownership of a directory and everything inside it.**
+    **I did the following below commands to Create a directory (and any missing parent directories), Change ownership of the directory and everything inside it.**
 
     ~~~bash
     sudo mkdir -p /home/user/projects
