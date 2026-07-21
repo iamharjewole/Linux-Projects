@@ -46,9 +46,9 @@
 
     **I did ping 192.168.1.1 and ping google.com to test my connectivity**
 
-    ![alt text](screeenshots/ping-1.png)
+    ![alt text](screenshots/ping-1.png)
 
-    ![alt text](screeenshots/ping-2.png)
+    ![alt text](screenshots/ping-2.png)
 
 - **Step 3: Capture Network Traffic:**
 
@@ -66,11 +66,11 @@
 
     **I used tcpdump to capture network traffic on the eth0 interface**
 
-    ![alt text](screeenshots/capture.pcap.png)
+    ![alt text](screenshots/capture.pcap.png)
 
     **I analyzed the captured traffic using tcpdump**
 
-    ![alt text](screeenshots/capture.pcap.2.png)
+    ![alt text](screenshots/capture.pcap.2.png)
 
 - **Step 4: Set Up a Firewall:**
 
@@ -84,7 +84,7 @@
 
     **I did the above commands to set up ufw to allow ssh and http traffic**
 
-    ![alt text](<screeenshots/ufw enable.png>)
+    ![alt text](<screenshots/ufw enable.png>)
 
 - **Step 5: Troubleshoot DNS:**
 
@@ -96,4 +96,4 @@
 
     **I did dig google.com to troubleshoot DNS resolution**
 
-    ![alt text](screeenshots/dig.png)
+    ![alt text](screenshots/dig.png)
