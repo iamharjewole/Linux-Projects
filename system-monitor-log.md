@@ -88,16 +88,18 @@
 
     */10* ** * df -h | awk '$5 > 90 {print $1, $5}' | mail -s "Disk Usage Alert" <iamharjewole@gmail.com>
 
-    **This means**
+    **The above commands means:**
 
-    ****/10 * * * *: Run the command every 10 minutes.***
+    ~~~bash
+    ****/10 * * * *: Run the command every 10 minutes, every hour, every day, every month, every day of the week.***
 
-    ***df -h: Displays disk space usage for all mounted filesystems in a human-readable format (e.g., GB, MB).***
+    ***df -h: This means displays disk space usage for all mounted filesystems in a human-readable format (e.g., GB, MB).***
 
-    ***awk '$5 > 90 {print $1, $5}: Checks the 5th column (the Use% column). If usage is greater than 90%, it prints the filesystem name ($1) and the percentage used ($5).***
+    ***awk '$5 > 90 {print $1, $5}: This means Checks the 5th column (the Use% column). If usage is greater than 90%, prints the filesystem name ($1) and the percentage used ($5).***
 
-    ***mail -s "Disk Usage Alert" <iamharjewole@gmail.com>: Emails the output with the subject "Disk Usage Alert" to <iamharjewole@gmail.com>.***
+    ***mail -s "Disk Usage Alert" iamharjewole@gmail.com: This means Emails the output with the subject "Disk Usage Alert" to iamharjewole@gmail.com.***
+    ~~~
 
-    **I did sudo crontab -e and added the above line in it to set a task to run at a specific time**
+    **I did sudo crontab -e, added the above commands in it to schedule specific task to run at every 10 minutes, every hour, every day, every month, every day of the week.**
 
     ![alt text](screenshots/crontab-task.png)
