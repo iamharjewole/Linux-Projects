@@ -96,7 +96,7 @@
 
     ***awk '$5 > 90 {print $1, $5}: Checks the 5th column (the Use% column). If usage is greater than 90%, it prints the filesystem name ($1) and the percentage used ($5).***
 
-    ***mail -s "Disk Usage Alert" <iamharjewole@example.com>: Emails the output with the subject "Disk Usage Alert" to <iamharjewole@example.com>.***
+    ***mail -s "Disk Usage Alert" <iamharjewole@gmail.com>: Emails the output with the subject "Disk Usage Alert" to <iamharjewole@gmail.com>.***
 
     **I did sudo crontab -e and added the above line in it to set a task to run at a specific time**
 
