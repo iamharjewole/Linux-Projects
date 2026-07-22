@@ -66,7 +66,7 @@
     0 * * * * /path/to/health_check.sh >> /var/log/health_check.log
     ~~~
 
-    **I did crontab -e, used the nano editor to schedule the script to run at every hour.**
+    **I did crontab -e, used the nano editor to schedule the script to run at 0 minutes every hour, every day, every month, every day of the week.**
 
     ![alt text](screenshots/crontab-healthcheck.png)
 
