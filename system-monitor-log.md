@@ -40,13 +40,13 @@
 
 - **Step 3: Set Up Log Rotation**
 
-    Configure log rotation for a custom log file (e.g., /var/log/myapp.log).
+    **Configure log rotation for a custom log file (e.g., /var/log/myapp.log).**
 
     ~~~bash
     sudo nano /etc/logrotate.d/myapp
     ~~~
 
-    Add the following configuration:
+    **Add the following configuration:**
 
     ~~~bash
         /var/log/myapp.log {
@@ -60,7 +60,7 @@
     }
     ~~~bash
 
-    I did sudo nano /etc/logrotate.d/myapp, this open the file if exits if not it will create the file for me to edit and save in it
+    **I did sudo nano /etc/logrotate.d/myapp, this open the file if exits if not it will create the file for me to edit and save in it**
 
 ![alt text](screenshots/logrotate.png)
 
@@ -78,7 +78,7 @@
 
 - **Step 5: Set Up Alerts**
 
-    Use cron and mail to send alerts when disk usage exceeds 90%.
+    **Use cron and mail to send alerts when disk usage exceeds 90%.**
 
     ~~~bash
     sudo crontab -e
@@ -86,20 +86,22 @@
 
     **Add the following line:**
 
-    */10* ** * df -h | awk '$5 > 90 {print $1, $5}' | mail -s "Disk Usage Alert" <iamharjewole@gmail.com>
+    **/10** ** df -h | awk '$5 > 90 {print $1, $5}' | mail -s "Disk Usage Alert" <iamharjewole@gmail.com>
 
     **The above commands means:**
 
     ~~~bash
-    ****/10 * * * *: Run the command every 10 minutes, every hour, every day, every month, every day of the week.***
+    */10 * * * *: Run the command every 10 minutes, every hour, every day, every month, every day of the week.
 
-    ***df -h: This means displays disk space usage for all mounted filesystems in a human-readable format (e.g., GB, MB).***
+    df -h: This means displays disk space usage for all mounted filesystems in a human-readable format (e.g., GB, MB).
 
-    ***awk '$5 > 90 {print $1, $5}: This means Checks the 5th column (the Use% column). If usage is greater than 90%, prints the filesystem name ($1) and the percentage used ($5).***
+    awk '$5 > 90 {print $1, $5}: This means Checks the 5th column (the Use% column). If usage is greater than 90%, prints the filesystem name ($1) and the percentage used ($5).***
 
-    ***mail -s "Disk Usage Alert" iamharjewole@gmail.com: This means Emails the output with the subject "Disk Usage Alert" to iamharjewole@gmail.com.***
+    mail -s "Disk Usage Alert" iamharjewole@gmail.com: This means Emails the output with the subject "Disk Usage Alert" to iamharjewole@gmail.com.
     ~~~
 
     **I did sudo crontab -e, added the above commands in it to schedule specific task to run at every 10 minutes, every hour, every day, every month, every day of the week.**
 
     ![alt text](screenshots/crontab-task.png)
+
+    **The schedule task has been successfully install to run**
